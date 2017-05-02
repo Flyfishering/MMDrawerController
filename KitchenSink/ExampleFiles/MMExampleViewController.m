@@ -38,6 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //contentSizeDidChangeNotification 通知: 用户更改了系统默认字体,比如 放大模式 会发送这个通知
     [[NSNotificationCenter defaultCenter]
      addObserver:self
      selector:@selector(contentSizeDidChangeNotification:)
@@ -50,7 +51,11 @@
      removeObserver:self];
 }
 
+/// 父类接收通知 子类去实现方法, 适合所有控制器都要实现某个通知的例子
+/// 这个方法 设为public
 -(void)contentSizeDidChangeNotification:(NSNotification*)notification{
+    /// UIContentSizeCategoryNewValueKey
+    /// 用户更改了系统默认字体大小 具体字体大小值
     [self contentSizeDidChange:notification.userInfo[UIContentSizeCategoryNewValueKey]];
 }
 

@@ -23,24 +23,49 @@
 
 /**
  `MMDrawerController` is a side drawer navigation container view controller designed to support the growing number of applications that leverage the side drawer paradigm. This library is designed to exclusively support side drawer navigation in light-weight, focused approach.
+ 这是一个抽屉导航控制器, 越来越多的应用开始使用抽屉效果, 这个库是 轻量级的 抽屉导航控制器
  
  ## Creating a MMDrawerController
  `MMDrawerController` is a container view controller, similiar to `UINavigationController` or `UITabBarController`, with up to three child view controllers - Center, LeftDrawer, and RightDrawer. To create a `MMDrawerController`, you must first instantiate the drawer view controllers and the initial center controller, then call one of the init methods listed in this class.
+ 
+ 创建 MMDrawerController
+ MMDrawerController 是一个 容器 控制器(和 UINavigationController 或者 UITabBarController 相似) 拥有三个自控制器, 中部, 左边抽屉, 右边抽屉 
+    创建 MMDrawerController 前 必须 先创建 上面提到的三个自控制器(左中右), 然后调用 下面给出的初始化方法 来创建
 
  ## Handling a UINavigationController as the centerViewController
  `MMDrawerController` automatically supports handling a `UINavigationController` as the `centerViewController`, and will correctly handle the proper gestures on each view (the navigation bar view as well as the content view for the visible view controller). Note that while this library does support other container view controllers, the open/close gestures are not customized to support them.
  
+ UINavigationController 可以作为 中部 的子控制器
+ MMDrawerController 自动支持 UINavigationController 作为 中部 自控制器, 可以正确管理view上的手势(无论是navigation bar view 还是 viewController 的view).
+    这个库 也支持包含 其他控制器容器, 这时 手势开关 不接受定制
+ 
  ## Accessing MMDrawerController from the Child View Controller
  You can leverage the category class (UIViewController+MMDrawerController) included with this library to access information about the parent `MMDrawerController`. Note that if you are contained within a UINavigationController, the `drawerContainerViewController` will still return the proper reference to the `drawerContainerViewController` parent, even though it is not the direct parent. Refer to the documentation included with the category for more information.
-
+ 从 子控制器 获取 MMDrawerController
+    自控制器 可以通过 分类(UIViewController+MMDrawerController) 来 获取关于 容器 MMDrawerController 的信息
+    即使 子控制器 包含在 UINavigationController 中, 在这个库中 自控制器的 容器 默认是 MMDrawerController .
+    更多 关于 这个分类的信息, 去分类中查看
+ 
  ## How MMDrawerOpenCenterInteractionMode is handled
  `MMDrawerOpenCenterInteractionMode` controls how the user should be able to interact with the center view controller when either drawer is open. By default, this is set to `MMDrawerOpenCenterInteractionModeNavigationBarOnly`, which allows the user to interact with UINavigationBarItems while either drawer is open (typicaly used to click the menu button to close). If you set the interaction mode to `MMDrawerOpenCenterInteractionModeNone`, no items within the center view will be able to be interacted with while a drawer is open. Note that this setting has no effect at all on the `MMCloseDrawerGestureMode`.
+ MMDrawerOpenCenterInteractionMode 控制了 当抽屉打开时 用户和中部控制器交互的模式. 默认是 MMDrawerOpenCenterInteractionModeNavigationBarOnly 只允许 中部控制器的导航栏可以交互,
+     MMDrawerOpenCenterInteractionModeNone: 禁止用户和中部控制器有任何交互
+     MMDrawerOpenCenterInteractionModeFull: 用户可以和中部控制器任何地方交互
+    注意: 无论设置什么模式, 都不会影响 单击中部控制器 的 手势 去关闭抽屉(MMCloseDrawerGestureMode)
+ 
  
  ## How Open/Close Gestures are handled
  Two gestures are added to every instance of a drawer controller, one for pan and one for touch. `MMDrawerController` is the delegate for each of the gesture recoginzers, and determines if a touch should be sent to the appropriate gesture when a touch is detected compared with the masks set for open and close gestures and the state of the drawer controller.
  
+ 打开和关闭 抽屉的手势
+    每个抽屉实例都被添加了 两个手势, 拖动手势 和 单击手势,
+    MMDrawerController 识别这些手势,
+    根据打开和关闭手势的识别 和 抽屉控制器的当前状态, 来决定 这个手势 是否 传递下去
+ 
  ## Integrating with State Restoration
  In order to opt in to state restoration for `MMDrawerController`, you must set the `restorationIdentifier` of your drawer controller. Instances of your centerViewController, leftDrawerViewController and rightDrawerViewController must also be configured with their own `restorationIdentifier` (and optionally a restorationClass) if you intend for those to be restored as well. If your MMDrawerController had an open drawer when your app was sent to the background, that state will also be restored.
+ 启用 重用标志
+    为了 恢复 MMDrawerController ,你必须给 中部控制器,左边抽屉,右边抽屉 和 MMDrawerController 设置重用标志restorationIdentifier, 这样, 你的应用在 进入后台 或者下次启动时 会 存储 抽屉的打开状态.
  
  ## What this library doesn't do.
  This library is not meant for:
@@ -48,11 +73,21 @@
     - Displaying both drawers at one time
     - Displaying a minimum drawer width
     - Support container view controllers other than `UINavigationController` as the center view controller. 
+ 
+ 这个库 不支持 下面的操作
+    - 1.不支持 顶部 或者 底部 抽屉
+    - 2.不支持 同时 打开 左右 抽屉
+    - 3.不支持 显示最小抽屉宽度(没看懂)
+    - 4.不支持 将容器控制器设置为 中部控制器 (UINavigationController 除外)
  */
 
+/// 抽屉类型
 typedef NS_ENUM(NSInteger,MMDrawerSide){
+    /// 不属于任何抽屉类型
     MMDrawerSideNone = 0,
+    /// 左边 抽屉类型
     MMDrawerSideLeft,
+    /// 右边 抽屉类型
     MMDrawerSideRight,
 };
 
@@ -141,6 +176,7 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  The visible width of the `leftDrawerViewController`. 
  
  Note this value can be greater than `maximumLeftDrawerWidth` during the full close animation when setting a new center view controller;
+ 当更换 中间控制器时  可以 大于maximumLeftDrawerWidth
  */
 @property (nonatomic, assign, readonly) CGFloat visibleLeftDrawerWidth;
 
@@ -296,7 +332,7 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
 ///---------------------------------------
 
 /**
- Toggles the drawer open/closed based on the `drawer` passed in. 
+ Toggles(切换) the drawer open/closed based on the `drawer` passed in.
  
  Note that if you attempt to toggle a drawer closed while the other is open, nothing will happen. For example, if you pass in MMDrawerSideLeft, but the right drawer is open, nothing will happen. In addition, the completion block will be called with the finished flag set to NO.
  
@@ -304,6 +340,11 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  @param animated Determines whether the `drawer` should be toggle animated.
  @param completion The block that is called when the toggle is complete, or if no toggle took place at all.
  
+ 切换抽屉的打开关闭状态(根据抽屉的当前状态来切换)
+    注意: 当你切换一个抽屉的状态, 此时另外一个抽屉当前是打开状态, 则 不做任何操作.(既不打开这个抽屉,也不关闭另外一个抽屉). 例如: 右抽屉已经打开, 左抽屉关闭, 此时你要切换左边抽屉的状态, 实际上 什么操作也不做, 除此之外,block中的 flag 参数也被 置为 NO
+ @param drawerSide 要切换状态的抽屉 不能为MMDrawerSideNone`.
+ @param animated 是否有切换动画
+ @param completion 切换完成之后的操作,或者没有切换失败的操作
  */
 -(void)toggleDrawerSide:(MMDrawerSide)drawerSide animated:(BOOL)animated completion:(void(^)(BOOL finished))completion;
 
@@ -311,8 +352,11 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  Closes the open drawer.
  
  @param animated Determines whether the drawer side should be closed animated
+        是否 有 关闭 动画
  @param completion The block that is called when the close is complete
+        关闭 抽屉之后的操作
  
+ 关闭 已经打开的抽屉
  */
 -(void)closeDrawerAnimated:(BOOL)animated completion:(void(^)(BOOL finished))completion;
 
@@ -391,6 +435,10 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  
  @param drawerSide The drawer to preview. This value cannot be `MMDrawerSideNone`.
  @param completion The block called when the animation is finsihed.
+ 
+ 
+ 弹跳出一个抽屉 view , 弹跳距离 40 点
+ 
  
  */
 -(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide completion:(void(^)(BOOL finished))completion;

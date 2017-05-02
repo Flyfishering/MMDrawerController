@@ -38,43 +38,57 @@
 @implementation MMAppDelegate
 -(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
     
+    //创建 左中右 控制器
     UIViewController * leftSideDrawerViewController = [[MMExampleLeftSideDrawerViewController alloc] init];
 
     UIViewController * centerViewController = [[MMExampleCenterTableViewController alloc] init];
     
     UIViewController * rightSideDrawerViewController = [[MMExampleRightSideDrawerViewController alloc] init];
     
+    //设置 重用标识  有了这个 程序再哪个页面杀死 再启动就会进入这个页面 好神奇
     UINavigationController * navigationController = [[MMNavigationController alloc] initWithRootViewController:centerViewController];
     [navigationController setRestorationIdentifier:@"MMExampleCenterNavigationControllerRestorationKey"];
     UINavigationController * rightSideNavController = [[MMNavigationController alloc] initWithRootViewController:rightSideDrawerViewController];
     [rightSideNavController setRestorationIdentifier:@"MMExampleRightNavigationControllerRestorationKey"];
     UINavigationController * leftSideNavController = [[MMNavigationController alloc] initWithRootViewController:leftSideDrawerViewController];
     [leftSideNavController setRestorationIdentifier:@"MMExampleLeftNavigationControllerRestorationKey"];
+    
+    
+    //凭借 上面的 左中右 控制器 创建 他们的控制器容器 drawerController
     self.drawerController = [[MMDrawerController alloc]
                         initWithCenterViewController:navigationController
                         leftDrawerViewController:leftSideNavController
                         rightDrawerViewController:rightSideNavController];
     [self.drawerController setShowsShadow:NO];
+    //重用 标识
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
+    //右控制器 宽度
     [self.drawerController setMaximumRightDrawerWidth:200.0];
+    
+    //手势开关:  打开 左右两侧 控制器
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+    //手势开关:  关闭 左右两侧 控制器
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
     
+    //左右 控制器打开的效果 这里设置了 视觉差 效果
     [self.drawerController
      setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
          MMDrawerControllerDrawerVisualStateBlock block;
+         //左边/右边 控制器 view 的变化效果
          block = [[MMExampleDrawerVisualStateManager sharedManager]
                   drawerVisualStateBlockForDrawerSide:drawerSide];
          if(block){
              block(drawerController, drawerSide, percentVisible);
          }
      }];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     UIColor * tintColor = [UIColor colorWithRed:29.0/255.0
                                           green:173.0/255.0
                                            blue:234.0/255.0
                                           alpha:1.0];
+    //设置 项目所有 tintColor:线条 颜色
     [self.window setTintColor:tintColor];
     [self.window setRootViewController:self.drawerController];
 
@@ -97,6 +111,7 @@
 - (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder{
     return YES;
 }
+
 
 - (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {

@@ -19,7 +19,9 @@
 // THE SOFTWARE.
 
 #import "MMExampleSideDrawerViewController.h"
-
+/**
+ 右边 控制器
+ */
 @interface MMExampleRightSideDrawerViewController : MMExampleSideDrawerViewController
 
 @end

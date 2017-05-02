@@ -22,12 +22,13 @@
 #import <Foundation/Foundation.h>
 #import "MMDrawerVisualState.h"
 
+//动画效果 
 typedef NS_ENUM(NSInteger, MMDrawerAnimationType){
-    MMDrawerAnimationTypeNone,
-    MMDrawerAnimationTypeSlide,
-    MMDrawerAnimationTypeSlideAndScale,
-    MMDrawerAnimationTypeSwingingDoor,
-    MMDrawerAnimationTypeParallax,
+    MMDrawerAnimationTypeNone,//无 特效
+    MMDrawerAnimationTypeSlide,// 滑动效果
+    MMDrawerAnimationTypeSlideAndScale,// 滑动 和 变形 效果
+    MMDrawerAnimationTypeSwingingDoor,//开门效果
+    MMDrawerAnimationTypeParallax,//视差 动画
 };
 
 @interface MMExampleDrawerVisualStateManager : NSObject
@@ -37,6 +38,10 @@ typedef NS_ENUM(NSInteger, MMDrawerAnimationType){
 
 + (MMExampleDrawerVisualStateManager *)sharedManager;
 
+
+/**
+  左边/右边 控制器 view 的变化效果
+ */
 -(MMDrawerControllerDrawerVisualStateBlock)drawerVisualStateBlockForDrawerSide:(MMDrawerSide)drawerSide;
 
 @end

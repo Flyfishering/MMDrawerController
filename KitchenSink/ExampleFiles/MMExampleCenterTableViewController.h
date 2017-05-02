@@ -21,7 +21,9 @@
 
 #import <UIKit/UIKit.h>
 #import "MMExampleViewController.h"
-
+/**
+ 中部 控制器
+ */
 @interface MMExampleCenterTableViewController : MMExampleViewController <UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) UITableView * tableView;
 

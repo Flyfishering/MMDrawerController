@@ -22,6 +22,8 @@
 
 /**
   `MMDrawerBarButtonItem` provides convenience methods to create `UIBarButtonItems` with a default hamburger-menu asset.
+ 
+ 提供了 方便的方法 去 创建 一个 汉堡菜单 导航栏按钮
  */
 
 @interface MMDrawerBarButtonItem : UIBarButtonItem
@@ -37,6 +39,8 @@
  @param action The action to call when the button is pressed.
  
  @return The newly-initialized bar button item.
+ 
+ 创建 MMDrawerBarButtonItem
  */
 -(instancetype)initWithTarget:(id)target action:(SEL)action;
 

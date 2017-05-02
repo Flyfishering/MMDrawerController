@@ -32,9 +32,13 @@
 #import <QuartzCore/QuartzCore.h>
 
 typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
+    /// 左边控制器 是否可用
     MMCenterViewControllerSectionLeftViewState,
+    /// 左边 控制器可选择的动画效果
     MMCenterViewControllerSectionLeftDrawerAnimation,
+    /// 右边 控制器 是否可用
     MMCenterViewControllerSectionRightViewState,
+    /// 右边 控制器可选择的动画效果
     MMCenterViewControllerSectionRightDrawerAnimation,
 };
 
@@ -63,10 +67,14 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
     [self.view addSubview:self.tableView];
     [self.tableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     
+    
+    //// 双击 弹跳 出 左边 抽屉 40 点 的距离 然后 再 弹 回去
     UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     [doubleTap setNumberOfTapsRequired:2];
     [self.view addGestureRecognizer:doubleTap];
     
+    
+    //// 双指 双击 弹出 右边 抽屉 40 点 的距离 然后 再 弹回去
     UITapGestureRecognizer * twoFingerDoubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerDoubleTap:)];
     [twoFingerDoubleTap setNumberOfTapsRequired:2];
     [twoFingerDoubleTap setNumberOfTouchesRequired:2];
@@ -179,21 +187,26 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
         case MMCenterViewControllerSectionLeftDrawerAnimation:
         case MMCenterViewControllerSectionRightDrawerAnimation:{
              MMDrawerAnimationType animationTypeForSection;
+            //left  控制器 动画效果
             if(indexPath.section == MMCenterViewControllerSectionLeftDrawerAnimation){
                 animationTypeForSection = [[MMExampleDrawerVisualStateManager sharedManager] leftDrawerAnimationType];
             }
+            //right 控制器 动画效果
             else {
                 animationTypeForSection = [[MMExampleDrawerVisualStateManager sharedManager] rightDrawerAnimationType];
             }
             
+            //right and  left 此时的动画效果 cell 表现形式
             if(animationTypeForSection == indexPath.row){
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [cell.textLabel setTextColor:selectedColor];
             }
+            // right and left 可选择的其他动画效果 cell 表现形式
             else {
                 [cell setAccessoryType:UITableViewCellAccessoryNone];
                 [cell.textLabel setTextColor:unselectedColor];
             }
+            //所有动画 名字 在tableview 中的显示
             switch (indexPath.row) {
                 case MMDrawerAnimationTypeNone:
                     [cell.textLabel setText:@"None"];
@@ -217,6 +230,7 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
         }
         case MMCenterViewControllerSectionLeftViewState:{
             [cell.textLabel setText:@"Enabled"];
+            //是否有 left 控制器
             if(self.mm_drawerController.leftDrawerViewController){
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [cell.textLabel setTextColor:selectedColor];
@@ -229,6 +243,7 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
         }
         case MMCenterViewControllerSectionRightViewState:{
             [cell.textLabel setText:@"Enabled"];
+            //是否 有 right 控制器
             if(self.mm_drawerController.rightDrawerViewController){
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [cell.textLabel setTextColor:selectedColor];
@@ -247,6 +262,7 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
 }
 
 -(NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    // tableview sectionHeader 标题
     switch (section) {
         case MMCenterViewControllerSectionLeftDrawerAnimation:
             return @"Left Drawer Animation";
@@ -261,10 +277,12 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
     }
 }
 #pragma mark - Table view delegate
-
+/// 点击cell 事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.section) {
+            
+            //动画效果选择
         case MMCenterViewControllerSectionLeftDrawerAnimation:
         case MMCenterViewControllerSectionRightDrawerAnimation:{
             if(indexPath.section == MMCenterViewControllerSectionLeftDrawerAnimation){
@@ -273,20 +291,26 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
             else {
                 [[MMExampleDrawerVisualStateManager sharedManager] setRightDrawerAnimationType:indexPath.row];
             }
+            //刷新 section
             [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+            //代码的方式选中 cell
             [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            //反选效果
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         }
+            //左右 控制器 是否显示
         case MMCenterViewControllerSectionLeftViewState:
         case MMCenterViewControllerSectionRightViewState:{
             UIViewController * sideDrawerViewController;
             MMDrawerSide drawerSide = MMDrawerSideNone;
             if(indexPath.section == MMCenterViewControllerSectionLeftViewState){
+                //左边抽屉
                 sideDrawerViewController = self.mm_drawerController.leftDrawerViewController;
                 drawerSide = MMDrawerSideLeft;
             }
             else if(indexPath.section == MMCenterViewControllerSectionRightViewState){
+                //右边抽屉
                 sideDrawerViewController = self.mm_drawerController.rightDrawerViewController;
                 drawerSide = MMDrawerSideRight;
             }
@@ -296,21 +320,30 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
                  closeDrawerAnimated:YES
                  completion:^(BOOL finished) {
                      if(drawerSide == MMDrawerSideLeft){
+                         //左边抽屉 置 nil
                          [self.mm_drawerController setLeftDrawerViewController:nil];
+                         //导航栏 左边 按钮 置 nil
                          [self.navigationItem setLeftBarButtonItems:nil animated:YES];
                      }
                      else if(drawerSide == MMDrawerSideRight){
+                         //右边抽屉 置 nil
                          [self.mm_drawerController setRightDrawerViewController:nil];
+                         //导航栏 右边 按钮 置 nil
                          [self.navigationItem setRightBarButtonItem:nil animated:YES];
                      }
+                     
+                     /// 刷新 cell
                      [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                     /// cell 选中效果
                      [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+                     /// 反选 效果
                      [tableView deselectRowAtIndexPath:indexPath animated:YES];
                  }];
 
             }
             else {
                 if(drawerSide == MMDrawerSideLeft){
+                    /// 添加 左边 抽屉控制器
                     UIViewController * vc = [[MMExampleLeftSideDrawerViewController alloc] init];
                     UINavigationController * navC = [[MMNavigationController alloc] initWithRootViewController:vc];
                     [self.mm_drawerController setLeftDrawerViewController:navC];
@@ -318,13 +351,18 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
                     
                 }
                 else if(drawerSide == MMDrawerSideRight){
+                    /// 添加 右边 控制器
                     UIViewController * vc = [[MMExampleRightSideDrawerViewController alloc] init];
                     UINavigationController * navC = [[MMNavigationController alloc] initWithRootViewController:vc];
                     [self.mm_drawerController setRightDrawerViewController:navC];
                     [self setupRightMenuButton];
                 }
+                
+                /// 刷新 cell
                 [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                /// 代码 选择 cell 效果
                 [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+                /// 反选择 效果
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
             
@@ -335,19 +373,23 @@ typedef NS_ENUM(NSInteger, MMCenterViewControllerSection){
     }
 }
 
-#pragma mark - Button Handlers
+#pragma mark - Button Handlers 按钮事件
+
+//切换 到 左边 抽屉
 -(void)leftDrawerButtonPress:(id)sender{
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
-
+// 切换到 右边抽屉
 -(void)rightDrawerButtonPress:(id)sender{
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideRight animated:YES completion:nil];
 }
 
+// 双击 弹跳 出 左边 抽屉 40 点 的距离 然后 再 弹 回去
 -(void)doubleTap:(UITapGestureRecognizer*)gesture{
     [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideLeft completion:nil];
 }
 
+// 双指 双击 弹出 右边 抽屉 40 点 的距离 然后 再 弹回去
 -(void)twoFingerDoubleTap:(UITapGestureRecognizer*)gesture{
     [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
 }

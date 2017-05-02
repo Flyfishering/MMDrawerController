@@ -121,8 +121,10 @@
         UIViewController * sideDrawerViewController;
         if(drawerSide == MMDrawerSideLeft) {
             sideDrawerViewController = drawerController.leftDrawerViewController;
+            //取最大值
             CGFloat distance = MAX(drawerController.maximumLeftDrawerWidth,drawerController.visibleLeftDrawerWidth);
             if (percentVisible <= 1.f) {
+                //3D 转化
                 transform = CATransform3DMakeTranslation((-distance)/parallaxFactor+(distance*percentVisible/parallaxFactor), 0.0, 0.0);
             }
             else{
@@ -142,6 +144,7 @@
             }
         }
         
+        //两边 控制器 视图 变化
         [sideDrawerViewController.view.layer setTransform:transform];
     };
     return visualStateBlock;
