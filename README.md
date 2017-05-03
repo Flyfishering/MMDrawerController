@@ -195,8 +195,9 @@ Beginning with 0.4.0, `MMDrawerController` supports iOS state restoration. In or
 ###Child View Controller Support
 Beginning with iOS 7, the child view controllers will by default determine the state of the status bar, including its' style and whether or not it is hidden. This value will also be updated anytime the open side changes state, meaning that a side drawer can provide a different value than the center view controller.
 
-##iOS 7 状态栏 支持
-###iOS7 之后 子控制器开始支持状态栏, 默认情况下, 子视图控制器确定状态栏的情况, 包含状态栏的样式和是否影藏, 状态栏的样式会随着抽屉的开关状态而随这改变,也就是说 抽屉的状态栏可以和中间视图控制器的状态栏不一样
+## iOS 7 状态栏 支持
+
+### iOS7 之后 子控制器开始支持状态栏, 默认情况下, 子视图控制器确定状态栏的情况, 包含状态栏的样式和是否影藏, 状态栏的样式会随着抽屉的开关状态而随这改变,也就是说 抽屉的状态栏可以和中间视图控制器的状态栏不一样
 
 If you do not want the drawer controller to consult the child view controllers for this state, you should subclass `MMDrawerController`, override `childViewControllerForStatusBarStyle` and `childViewControllerForStatusBarHidden`, and return nil for both.
 
@@ -208,7 +209,8 @@ If you have a contrasting colors between your center view controller and your dr
 To enable a custom status bar, simple set `showsStatusBarBackgroundView` to `YES`. By default, this will draw a black a view underneath the status bar, and adjust your to content to be laid out lower than the status bar. If you would like a custom status background color, you can set `statusBarViewBackgroundColor` to whatever color you desire.
 
 
-###自定义 状态栏的背景视图
+### 自定义 状态栏的背景视图
+
 如果你的中间控制器和抽屉控制器 拥有不同的颜色风格, iOS 7 之后的状态栏可能表现的跟你想象的不太一样, iOS 7 之后, `MMDrawerController` 支持抽屉控制器有一个自定义状态栏, 提供给你一个区域去呈现特性颜色的状态栏,允许你在状态栏下绘制自定义内容不用担心 状态栏下面的导航栏的颜色会发生变化(iOS 7 之后 状态栏颜色会影响导航栏颜色 反之亦然) 这里使用了 iOS 6 之前的状态栏行为(iOS 6 之前 导航栏 和 状态栏互不影响, 这里采用了 iOS 6 的设计方式)
 ---
 ##Subclassing
@@ -290,7 +292,7 @@ The example shows off all the features of the library. Give it a whirl.
 ##What this Library Doesn't Do
 In order to keep this library light-weight, we had to make some design trade off decisions. Specifically, we decided this library would NOT DO the following:
 
-这个框架做不到下面的事情, 为了保证这个库 轻体谅, 我们不得不做一些设计上的权衡, 我们决定 这个库不支持下面的事情
+这个框架做不到下面的事情, 为了保证这个库 轻体量, 我们不得不做一些设计上的权衡, 我们决定 这个库不支持下面的事情
 
 * Top or bottom drawer views
 * Displaying both drawers at one time
