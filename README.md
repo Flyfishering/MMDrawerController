@@ -73,6 +73,7 @@ MMDrawerController * drawerController = [[MMDrawerController alloc]
  * **MMCloseDrawerGestureModeCustom**: The developer can provide a callback block to determine if the gesture should be recognized. More information below.
  
  
+ ---
  
  * **MMOpenDrawerGestureMode** 打开抽屉手势
  * **MMOpenDrawerGestureModePanningNavigationBar**: 滑动导航栏 打开抽屉.
@@ -171,6 +172,8 @@ When a drawer is open, you can control how a user can interact with the center v
 * **MMDrawerOpenCenterInteractionModeFull**: The user can interact with all content in the center view.
 * **MMDrawerOpenCenterInteractionModeNavigationBarOnly**: The user can interact with only content on the navigation bar. The setting allows the menu button to still respond, allowing you to toggle the drawer closed when it is open. This is the default setting.
 
+---
+
 * **MMDrawerOpenCenterInteractionModeNone**: 中间的控制器不会有任何交互
 * **MMDrawerOpenCenterInteractionModeFull**: 中间控制器 交互打开
 * **MMDrawerOpenCenterInteractionModeNavigationBarOnly**: 仅仅只有中间控制器的 导航栏交互打开, 也就是菜单按钮可以响应, 允许你点击菜单按钮关闭抽屉. 默认设置
@@ -213,20 +216,36 @@ If you plan to subclass `MMDrawerController`, import `MMDrawerController+Subclas
 
 If there is specific functionality you need that is not supported by these methods, please open a Github issue explaining your needs and we can try and find a way to open up methods that can help you out.
 
+
+## 继承
+如果你打算继承 `MMDrawerController` 引入 类 `MMDrawerController+Subclass.h` 到你继承的类中 方便获取 `MMDrawerController.` 的私有方法, 注意: 有些方法需要你 调用 super 的方法, 请遵守下面的 规则
+
+如果你需要这个框架支持更多的 方法, 请在 Github 上告诉我们, 我们将会帮你提供这些方法.
+
 ---
 ##Bells and Whistles
 A few extras to make your life easier...
+
+下面的扩展会让你的工程 更容易.
 
 ###MMDrawerBarButtonItem
 Using Paint Code, we created a standard Menu Button that you can use in any `UINavigationBar`, and make it whatever color you want. It's included as a subspec to this library. Enjoy.
 
 Starting with iOS 7, the drawer button is now drawn in a much thinner stroke. In addition, the color methods have been deprecated, and the color will now be determined by the `tintColor.` Also note that the shadow has been deprecated to be more in line with the design themes of the OS.
 
+我们提供了 `UINavigationBar` 类型的菜单按钮, 你可以设置任意你想要的颜色
+
+在 iOS 7 之后, 改变颜色的方法 被废弃, 你应该使用 `tintColor.` 来改变颜色, 注意 shadow 方法也被 废弃
 ###Prebuilt Example Animations
 In order to make it as easy as possible for you to use this library, we built some of the common animations we see out there today. Simply include the `MMDrawerVisualStates` subspec, and use any of the prebuilt visual states.
 
 For example, if you wanted to use a slide and scale animation, you would do the following:
 
+
+提供几种抽屉动画
+为了让你更 简单去使用这个 库 , 我们提供了 几种抽屉动画, 你可以在 `MMDrawerVisualStates` 类中找到这些动画
+
+例如: 你想用一个 侧边变形的动画 , 可以使用下面的代码.
 ```Objective-C
 [drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
 ```
@@ -235,18 +254,32 @@ And that's it...
 
 Here's a quick list of the built in animations:
 
+下面列出来 抽屉动画类型
+
 * **Slide**: The drawer slides at the same rate as the center view controller.
 * **Slide and Scale**: The drawer slides and scales up at the same time, while also alpha'ing from 0.0 to 1.0.
 * **Swinging Door**: The drawer swings in along a hinge on the center view controller.
 * **Parallax**: The drawer slides in at a slower rate than the center view controller, giving a parallax effect.
 
+---
+* **Slide**: 侧边 抽屉动画 , 和 中间的控制器有着相同的长宽比
+* **Slide and Scale**: 侧边抽屉 变形动画, 同时 透明度 由 0.0 到 1.0
+* **Swinging Door**: The drawer swings in along a hinge on the center view controller.
+* **Parallax**: 一个视觉差 的动画
+
 ###Stretchy Drawer
 By default, the side drawer will stretch if the user pans past the maximum drawer width. This gives a playful stretch effect. You can disable this by setting `shouldStretchDrawer` to NO, or you can make your own overshoot animation by creating a custom visual state block and setting up custom transforms for when percentVisible is greater than 1.0
+
+弹性 抽屉
+默认情况,当侧边抽屉被用户滑动展开超出了 最大宽度, 将会有一个有弹性的像话, 可以设置 `shouldStretchDrawer` 去关闭 这个效果, 你也可以自定义自己的弹性动画
 
 ###Bounce Preview
 To make your side drawer more discoverable, it may be helpful to bounce the drawer the first time your user launches the app. You can use the `bouncePreviewForDrawerSide:completion:` method to easily do this.
 
 If you would like to bounce a custom distance, you can use `bouncePreviewForDrawerSide:distance:completion:`.
+
+弹跳 视图
+在用户第一次打开 APP 你可以使用弹跳效果向用户展示抽屉中的内容,方法 `bouncePreviewForDrawerSide:completion:` 让你方便的实现这个效果
 
 ###Nifty Example
 We decided to spruce up the example a bit using graphics generated from PaintCode. Hope you like it.
@@ -257,19 +290,36 @@ The example shows off all the features of the library. Give it a whirl.
 ##What this Library Doesn't Do
 In order to keep this library light-weight, we had to make some design trade off decisions. Specifically, we decided this library would NOT DO the following:
 
+这个框架做不到下面的事情, 为了保证这个库 轻体谅, 我们不得不做一些设计上的权衡, 我们决定 这个库不支持下面的事情
+
 * Top or bottom drawer views
 * Displaying both drawers at one time
 * Displaying a minimum drawer width
 * Support container view controllers other than `UINavigationController` (such as `UITabBarController` or `UISplitViewController`) as the center view controller. 
 * Support presenting the drawer above the center view controller (like the Google+ app).
 
+* 不支持 顶部和底部 抽屉
+* 不支持同时 展示 两侧的抽屉
+* 不支持 最小抽屉宽度
+* 不支持 容器控制器作为 中间的控制器 比如 `UITabBarController` `UISplitViewController` (但是 `UINavigationController` 除外)
+* 不支持 在中间控制器上面 展示抽屉 (比如类似 Google+ app 的效果).
+
 We're sure this list will grow over time. But that's the cost of keeping something maintainable :)
+
+我们 确保 长时间 都不会支持上面提到的这些事情 
 
 ---
 ##Workarounds/FAQs
 ####How do I support editing/dragging cells in a tableview in the center view controller?
 The best way to support this is to set the open/close mask to `MMOpenDrawerGestureModeNone` / `MMCloseDrawerGestureModeNone` while editing is enabled, and restore the mask when editing is finished. This will allow the proper gestures/touches to be passed all the way to the table view. ([#184](https://github.com/mutualmobile/MMDrawerController/issues/184))
 
+当 中间控制器含有一个 tablview 列表 时 ,怎么实现 cell 的编辑和拖拽效果呢?
+最好的做法就是 当你开始编辑cell 时 把抽屉的打开/关闭手势设置为 `MMOpenDrawerGestureModeNone` / `MMCloseDrawerGestureModeNone` , 编辑结束后 保存 编辑结束的状态, 这样就确保了不影响 table view 的手势 , 
+
+---
+## 翻译结束, 水平有限 有错误大家 及时指出啊, 在用这个库 有任何疑问可以咨询我啊
+
+## 我的简书地址[iOS_愛OS](http://www.jianshu.com/u/6b0da6cb659c) 有问题可以给我发简信 , 基本上 每天都在线的
 
 ---
 ##Credit
